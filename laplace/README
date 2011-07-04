@@ -1,0 +1,7 @@
+Try running..
+> ipython compare.py
+
+Alternatively in an IPython session try...
+run -i compare.py
+
+This will execute multiple comparisons and time the results. 

@@ -1,0 +1,8 @@
+_ip.magic('run laplace')
+_ip.magic('timeit calc(100,80,py_update)')
+_ip.magic('timeit calc(100,8000,num_update)')
+_ip.magic('timeit calc(100,8000,cy_update,(dx2,dy2))')
+_ip.magic('timeit calc(100,8000,weave_update)')
+_ip.magic('timeit calc(100,8000,cy_update2,(dx2,dy2))')
+_ip.magic('timeit calc(100,8000,for_update1,(dx2,dy2,100,100))')
+_ip.magic('timeit calc(100,8000,for_update2,(dx2,dy2,100,100))')
