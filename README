@@ -1,0 +1,4 @@
+Files to test various ways to speed up Python.
+
+laplace/
+	Solving the laplace problem in various ways
