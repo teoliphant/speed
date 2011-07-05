@@ -23,3 +23,8 @@ start = time.time()
 u = calc(150,8000)
 elapsed = time.time() - start
 print "%f seconds" % elapsed
+
+import pickle
+f = open('myfile.pkl', 'w')
+pickle.dump(u, f)
+f.close()
