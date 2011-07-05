@@ -1,7 +1,7 @@
-Try running..
-> ipython compare.py
+The script 
 
-Alternatively in an IPython session try...
-run -i compare.py
+run_commands.sh
 
-This will execute multiple comparisons and time the results. 
+times the results.  This assumes you have previously compiled the
+basic Cython and Fortran modules using the compile_with_f2py script.
+
