@@ -5,7 +5,9 @@ import pyximport
 import numpy as np
 from _laplace_for import for_update1, for_update2
 pyximport.install(setup_args={'include_dirs':[np.get_include()]})
-from _laplace import cy_update 
+from _laplace import cy_update
+import numbapro
+from numba import jit, autojit
 
 
 dx = 0.1
@@ -25,6 +27,23 @@ def expr_update(u, dx2, dy2):
     right = u[1:-1,:-2]
     u[1:-1,1:-1] = ne.evaluate("((bottom + top)*dy2 + "\
                     "(left + right)*dx2) / (2*(dx2+dy2))")
+
+@jit('void(double[:,:], double, double)')
+#@autojit
+def numbapro_update(u, dx2, dy2):
+    u[1:-1,1:-1] = ((u[2:,1:-1]+u[:-2,1:-1])*dy2 + 
+                    (u[1:-1,2:] + u[1:-1,:-2])*dx2) / (2*(dx2+dy2))
+
+
+@jit('void(double[:,:], double, double)')
+#@autojit
+def numba_update(u, dx2, dy2):
+    nx, ny = u.shape
+    for i in xrange(1,nx-1):
+        for j in xrange(1, ny-1):
+            u[i,j] = ((u[i+1,j] + u[i-1,j]) * dy2 +
+                      (u[i,j+1] + u[i,j-1]) * dx2) / (2*(dx2+dy2))
+    
     
 def weave_update(u, dx, dy2):
     code = """
@@ -37,7 +56,6 @@ def weave_update(u, dx, dy2):
     }
     """
     weave.inline(code, ['u', 'dx2', 'dy2'])
-
 
 def calc(N, Niter=100, func=num_update, args=()):
     order = 'C' if func not in [for_update1, for_update2] else 'F'
@@ -54,6 +72,8 @@ def main():
     N = 150
     Niter = 8000
     modes = [['NumPy', num_update, (dx2, dy2)],
+             ['Numba', numba_update, (dx2, dy2)],
+             ['Vectorized Numba', numbapro_update, (dx2, dy2)],
              ['Numexpr', expr_update, (dx2, dy2)],
              ['Cython', cy_update, (dx2, dy2)],
              ['Weave', weave_update, (dx2, dy2)],
